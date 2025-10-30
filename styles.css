@@ -1292,9 +1292,208 @@ body {
     flex: 1;
 }
 
+/* Message Analysis Page Styles */
+.message-input-zone {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    border: 2px solid var(--gray);
+}
+
+.input-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.input-header i {
+    font-size: 3rem;
+    color: var(--accent-teal);
+    margin-bottom: 1rem;
+}
+
+.input-header h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.input-header p {
+    color: var(--dark-gray);
+}
+
+#messageInput {
+    width: 100%;
+    padding: 1.5rem;
+    border: 2px solid var(--gray);
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    resize: vertical;
+    transition: all 0.3s;
+    color: var(--text-dark);
+}
+
+#messageInput:focus {
+    outline: none;
+    border-color: var(--accent-teal);
+    box-shadow: 0 0 0 3px rgba(0, 149, 255, 0.1);
+}
+
+.input-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem 0;
+    padding: 0 0.5rem;
+    color: var(--dark-gray);
+    font-size: 0.9rem;
+}
+
+.input-info .divider {
+    margin: 0 0.5rem;
+}
+
+#urlCount {
+    color: var(--accent-teal);
+    font-weight: 600;
+}
+
+.risk-level-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #001a2e, #002e4f);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    color: var(--white);
+}
+
+.risk-badge {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.risk-badge i {
+    font-size: 3rem;
+}
+
+.risk-badge span {
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+.risk-probability {
+    text-align: right;
+}
+
+.probability-label {
+    font-size: 1rem;
+    opacity: 0.8;
+    margin-bottom: 0.5rem;
+}
+
+.probability-value {
+    font-size: 3.5rem;
+    font-weight: 800;
+}
+
+.message-display {
+    background: var(--light-gray);
+    border-radius: 12px;
+    padding: 1.5rem;
+    line-height: 1.8;
+    color: var(--text-dark);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin-bottom: 1.5rem;
+}
+
+.url-detection {
+    background: rgba(255, 193, 7, 0.1);
+    border: 2px solid #ffc107;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.url-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    color: #f57c00;
+    font-size: 1.1rem;
+}
+
+.url-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.url-item {
+    background: var(--white);
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid #f57c00;
+    font-family: monospace;
+    word-break: break-all;
+    color: var(--text-dark);
+}
+
+.risk-grade {
+    margin-top: 0.5rem;
+}
+
+.grade-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: #ef4444;
+    color: var(--white);
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+}
+
+.grade-badge.warning {
+    background: #f59e0b;
+}
+
+.grade-badge.safe {
+    background: #10b981;
+}
+
+.analysis-grounds {
+    margin-top: 0.5rem;
+}
+
+.ground-item {
+    padding: 0.8rem 0;
+    color: var(--text-dark);
+    display: flex;
+    align-items: start;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--gray);
+}
+
+.ground-item:last-child {
+    border-bottom: none;
+}
+
+.ground-item:before {
+    content: "⚠️";
+    flex-shrink: 0;
+}
+
+/* Info Section */
 .info-section {
     padding: 80px 0;
-    background: var(--white);
+    background: var(--light-gray);
 }
 
 .info-section h2 {
@@ -1312,14 +1511,21 @@ body {
 }
 
 .info-card {
-    text-align: center;
+    background: var(--white);
     padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
 }
 
 .info-card i {
     font-size: 3rem;
     color: var(--accent-teal);
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .info-card h3 {
@@ -1330,6 +1536,72 @@ body {
 }
 
 .info-card p {
+    color: var(--dark-gray);
+    line-height: 1.6;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    justify-content: center;
+}
+
+.action-buttons .btn {
+    flex: 1;
+    max-width: 300px;
+}
+
+/* Tips Section */
+.tips-section {
+    padding: 80px 0;
+    background: #fff8e1;
+}
+
+.tips-section h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--text-dark);
+    margin-bottom: 3rem;
+}
+
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+}
+
+.tip-box {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    border: 2px solid #ffc107;
+}
+
+.tip-icon {
+    width: 70px;
+    height: 70px;
+    background: #ffc107;
+    color: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin: 0 auto 1.5rem;
+}
+
+.tip-box h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.8rem;
+}
+
+.tip-box p {
     color: var(--dark-gray);
     line-height: 1.6;
 }
