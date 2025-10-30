@@ -1,0 +1,24 @@
+# General
+.DS_Store
+Thumbs.db
+*.log
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.env
+
+# Node
+node_modules/
+dist/
+build/
+
+sessions/
+*.session
+
+reports/
+*.report
+
+sumtehch/
+*.sumtehch
