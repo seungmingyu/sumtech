@@ -1,18 +1,23 @@
 import json
-from fastapi import APIRouter, UploadFile, File, HTTPException, Request
+from fastapi import APIRouter, UploadFile, File, HTTPException, Request, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, JSONResponse
 from starlette.concurrency import run_in_threadpool
 
 from app.LLM.voice_gemini import generate_rag_answer_from_audio
 from app.services.deepfake_checker import IsDeepfakeAudioFile
-
+from app.services.url_checker import JudgeUrls
+from app.LLM.message_gemini import analyze_smishing_message
 router = APIRouter(prefix="/scan")
 templates = Jinja2Templates(directory="templates")
 
 @router.get("/voice", response_class=HTMLResponse)
 def voice_page(request: Request):
     return templates.TemplateResponse("voice.html", {"request": request})
+
+@router.get("/message", response_class=HTMLResponse)
+def message_page(request: Request):
+    return templates.TemplateResponse("message.html", {"request": request})
 
 @router.post("/voice")
 async def scan_voice(file: UploadFile = File(...), k: int = 5):
@@ -93,3 +98,25 @@ async def scan_voice(file: UploadFile = File(...), k: int = 5):
     }
 
     return JSONResponse(content=data, media_type="application/json")
+
+@router.post("/message")
+def scan_message(text: str = Form(...)):
+    if not text.strip():
+        raise HTTPException(status_code=400, detail="text is empty")
+
+    dic = JudgeUrls(text)
+    if any(dic.values()):
+        url_check_result = "True"
+    elif len(dic) == 0:
+        url_check_result = "N/A"
+    else:
+        url_check_result = "False"
+
+    gemini_output = analyze_smishing_message(text, url_check_result)
+
+    result = {
+        "url_analysis": dic,
+        "url_overall": url_check_result,
+        "gemini_result": gemini_output,
+    }
+    return JSONResponse(content=result, media_type="application/json")

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>문자 분석 서비스 - SumTech</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+    <style>
+      /* 가독성 보정 (추천/권고 폰트/행간) */
+      .recommendations li { line-height: 1.6; margin: 4px 0; font-weight: 500; }
+      .analysis-grounds li { line-height: 1.6; margin: 4px 0; }
+      .url-item.bad { background: #2a0c0c; color: #ffb3b3; border: 1px solid #f87171; }
+      .url-item.ok { background: #0d2a1f; color: #b7f0d0; border: 1px solid #34d399; }
+      .url-item.na { background: #111827; color: #9ca3af; border: 1px dashed #374151; }
+      .url-item { padding: 8px 10px; border-radius: 8px; margin: 6px 0; display:flex; gap:8px; align-items:center; }
+      .grade-badge { display:inline-block; padding: 4px 10px; border-radius: 9999px; font-weight: 700; }
+      .grade-badge.warning { background:#3b2a00; color:#fbbf24; }
+      .grade-badge.safe { background:#052e26; color:#34d399; }
+      .grade-badge.danger { background:#3b0000; color:#fca5a5; }
+      .message-display { white-space: pre-wrap; }
+      .btn.btn-outline-small { font-size: 0.9rem; }
+    </style>
+      <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}">
+
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html" style="text-decoration: none;">
+                    <span class="logo-text">SumTech</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">홈</a></li>
+                <li><a href="/scan/voice" class="nav-link">통화위험체크</a></li>
+                <li><a href="/scan/message" class="nav-link">메세지 위협체크</a></li>
+                <li><a href="/api/chat-bot" class="nav-link active">모의대화 코칭</a></li>
+                <li><a href="service4.html" class="nav-link">상황 퀴즈</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Service Detail Hero -->
+    <section class="service-detail-hero">
+        <div class="container">
+            <h1>보이스피싱 문자 분석</h1>
+            <p class="hero-subtitle">의심스러운 문자 메시지를 입력하면 AI가 악성 URL과 보이스피싱 여부를 분석합니다</p>
+        </div>
+    </section>
+
+    <!-- Message Analysis Section -->
+    <section class="voice-analysis-section">
+        <div class="container">
+            <div class="analysis-container">
+                <!-- Message Input Area -->
+                <div class="message-input-zone" id="messageInputZone">
+                    <div class="input-header">
+                        <i class="fas fa-sms"></i>
+                        <h3>의심스러운 문자 메시지를 입력하세요</h3>
+                        <p>받은 문자 내용을 그대로 복사하여 붙여넣기 해주세요</p>
+                    </div>
+                    <textarea 
+                        id="messageInput" 
+                        placeholder="예시:&#10;[Web발신]&#10;고객님의 택배가 주소 불명으로 보관중입니다.&#10;확인: https://example-link.com&#10;&#10;※ 문자 전체 내용을 입력해주세요"
+                        rows="8"
+                    ></textarea>
+                    <div class="input-info">
+                        <span id="charCount">0자</span>
+                        <span class="divider">|</span>
+                        <span id="urlCount">URL 0개 감지</span>
+                    </div>
+                    <button class="btn btn-accent" id="analyzeMessageBtn">
+                        <i class="fas fa-search"></i>
+                        문자 분석하기
+                    </button>
+                </div>
+
+                <!-- Processing Status -->
+                <div class="processing-status" id="messageProcessingStatus" style="display: none;">
+                    <div class="status-header">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <h3>분석 중...</h3>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="messageProgressFill"></div>
+                    </div>
+                    <p class="status-text" id="messageStatusText">문자 내용을 분석하고 있습니다...</p>
+                </div>
+
+                <!-- Analysis Result -->
+                <div class="analysis-result" id="messageAnalysisResult" style="display: none;">
+                    <div class="result-header">
+                        <h2>분석 결과</h2>
+                        <button class="btn btn-outline-small" id="newMessageAnalysisBtn">
+                            <i class="fas fa-redo"></i>
+                            새로운 분석
+                        </button>
+                    </div>
+
+                    <!-- Risk Level Card -->
+                    <div class="risk-level-card">
+                        <div class="risk-badge" id="riskBadge">
+                            <i class="fas fa-shield-alt"></i>
+                            <span id="riskLevel">-</span>
+                        </div>
+                        <div class="risk-probability">
+                            <div class="probability-label">위험 확률</div>
+                            <div class="probability-value" id="riskProbability">-</div>
+                        </div>
+                    </div>
+
+                    <!-- Message Content -->
+                    <div class="result-section">
+                        <h3>
+                            <i class="fas fa-envelope-open-text"></i>
+                            메시지 내용
+                        </h3>
+                        <div class="message-display" id="messageContent">
+                            입력된 메시지가 여기에 표시됩니다...
+                        </div>
+                        <div class="url-detection" id="urlDetection" style="display: none;">
+                            <div class="url-header">
+                                <i class="fas fa-link"></i>
+                                <strong>감지된 URL</strong>
+                                <small id="urlOverallBadge" style="margin-left:8px; opacity:.8;"></small>
+                            </div>
+                            <div class="url-list" id="urlList"></div>
+                        </div>
+                    </div>
+
+                    <!-- Analysis Details -->
+                    <div class="result-section">
+                        <h3>AI 분석 결과</h3>
+                        <div class="analysis-details">
+                            <!-- 위험도 등급 -->
+                            <div class="detail-card">
+                                <div class="detail-icon danger">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                </div>
+                                <div class="detail-content">
+                                    <h4>위험도 등급</h4>
+                                    <div class="risk-grade" id="riskGrade">
+                                        <span class="grade-badge">-</span>
+                                        <p id="riskGradeDesc" style="margin-top:6px; opacity:.9;"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 분석 근거 -->
+                            <div class="detail-card">
+                                <div class="detail-icon warning">
+                                    <i class="fas fa-clipboard-list"></i>
+                                </div>
+                                <div class="detail-content">
+                                    <h4>분석 근거</h4>
+                                    <ul class="analysis-grounds" id="analysisGrounds"></ul>
+                                </div>
+                            </div>
+
+                            <!-- 권고 대처 방안 -->
+                            <div class="detail-card">
+                                <div class="detail-icon safe">
+                                    <i class="fas fa-hand-paper"></i>
+                                </div>
+                                <div class="detail-content">
+                                    <h4>권고 대처 방안</h4>
+                                    <ul class="recommendations" id="messageRecommendations"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="downloadMessageReport">
+                            <i class="fas fa-download"></i>
+                            분석 결과 다운로드
+                        </button>
+                        <button class="btn btn-outline" id="reportMessage">
+                            <i class="fas fa-flag"></i>
+                            보이스피싱 신고
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Information Section -->
+    <section class="info-section">
+        <div class="container">
+            <h2>문자 분석 서비스 안내</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <i class="fas fa-link"></i>
+                    <h3>URL 자동 감지</h3>
+                    <p>문자 내 모든 링크를 자동으로 추출하여 악성 사이트 여부를 확인합니다.</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-brain"></i>
+                    <h3>AI 패턴 분석</h3>
+                    <p>보이스피싱 문자의 특징적인 패턴과 키워드를 AI가 분석합니다.</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-database"></i>
+                    <h3>실시간 DB 대조</h3>
+                    <p>최신 보이스피싱 사례 데이터베이스와 실시간으로 대조합니다.</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>안전한 분석</h3>
+                    <p>입력된 문자는 분석 목적으로만 사용되며 저장되지 않습니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>의심스러운 문자를 받으셨나요?</h2>
+                <p>지금 바로 문자 내용을 분석하여 보이스피싱 여부를 확인하세요</p>
+                <button class="btn btn-primary" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+                    지금 분석하기
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-logo">SumTech</h3>
+                    <p>보이스피싱 예방을 위한 AI 기반 솔루션을 제공합니다.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>서비스</h4>
+                    <ul>
+                        <li><a href="service1.html">음성 분석</a></li>
+                        <li><a href="service2.html">문자 분석</a></li>
+                        <li><a href="service3.html">서비스 3</a></li>
+                        <li><a href="service4.html">서비스 4</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>긴급 신고</h4>
+                    <ul>
+                        <li>경찰신고: 112</li>
+                        <li>금융감독원: 1332</li>
+                        <li>보이스피싱: 1588-2112</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>법적 고지</h4>
+                    <ul>
+                        <li><a href="#">이용약관</a></li>
+                        <li><a href="#">개인정보처리방침</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 SumTech. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+  <script defer src="{{ url_for('static', path='message-analysis.js') }}"></script>
+</body>
+</html>

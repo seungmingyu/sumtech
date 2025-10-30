@@ -3,146 +3,240 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>음성 변조 서비스 - 보이스피싱 예방 센터</title>
-  <link rel="stylesheet" href="/static/style.css" />
+  <title>음성 분석 서비스 - SumTech</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+
+  <!-- ✅ 정적 파일: FastAPI/Jinja 경로 -->
+  <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}">
 </head>
 <body>
-  <div class="background-pattern"></div>
-
-  <header class="page-header">
-    <nav>
-      <div class="logo">
-        <h1><a href="index.html">보이스피싱 예방 센터</a></h1>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <a href="index.html" style="text-decoration: none;">
+          <span class="logo-text">SumTech</span>
+        </a>
       </div>
       <ul class="nav-menu">
-        <li><a href="index.html">홈</a></li>
-        <li><a href="voice-changer.html" class="active">음성 변조</a></li>
-        <li><a href="url-checker.html">URL 검사</a></li>
-        <li><a href="ai-chatbot.html">AI 챗봇</a></li>
-      </ul>
-    </nav>
-  </header>
+                <li><a href="/" class="nav-link">홈</a></li>
+                <li><a href="/scan/voice" class="nav-link">통화위험체크</a></li>
+                <li><a href="/scan/message" class="nav-link">메세지 위협체크</a></li>
+                <li><a href="/api/chat-bot" class="nav-link active">모의대화 코칭</a></li>
+                <li><a href="service4.html" class="nav-link">상황 퀴즈</a></li>
+            </ul>
+    </div>
+  </nav>
 
-  <main class="page-content">
-    <div class="container voice-dashboard">
-      <div class="dashboard-header">
-        <div class="header-summary">
-          <h1>피싱탐지</h1>
-          <p>통화 음성을 업로드하면 AI가 전사와 근거 분석을 수행합니다.</p>
-        </div>
-        <div class="header-actions">
-          <button class="btn btn-primary" id="startAnalysisBtn">분석 시작</button>
-          <button class="btn btn-ghost" id="resetAnalysisBtn">초기화</button>
-        </div>
-      </div>
+  <!-- Service Detail Hero -->
+  <section class="service-detail-hero">
+    <div class="container">
+      <h1>보이스피싱 음성 분석</h1>
+      <p class="hero-subtitle">음성 파일을 업로드하면 AI가 보이스피싱 여부를 분석합니다</p>
+    </div>
+  </section>
 
-      <div class="file-upload-card">
-        <div class="upload-area" id="uploadArea">
-          <div class="upload-icon">🎤</div>
-          <h3>통화 녹음 파일 업로드</h3>
-          <p>MP3, WAV, M4A 파일을 드래그하거나 클릭하여 업로드하세요</p>
-          <input type="file" id="audioFileInput" accept="audio/*" hidden />
-          <button class="btn btn-outline" id="selectFileBtn">파일 선택</button>
+  <!-- Voice Analysis Section -->
+  <section class="voice-analysis-section">
+    <div class="container">
+      <div class="analysis-container">
+        <!-- Upload Area -->
+        <div class="upload-zone" id="uploadZone">
+          <div class="upload-icon">
+            <i class="fas fa-cloud-upload-alt"></i>
+          </div>
+          <h3>음성 파일을 업로드하세요</h3>
+          <p>MP3, WAV, M4A 파일을 지원합니다 (최대 50MB)</p>
+
+          <input type="file" id="audioFileInput" accept="audio/*" style="display:none;" />
+          <button class="btn btn-accent" onclick="document.getElementById('audioFileInput').click()">
+            <i class="fas fa-folder-open"></i> 파일 선택
+          </button>
+
+          <div class="file-info" id="fileInfo" style="display:none;">
+            <i class="fas fa-file-audio"></i>
+            <span id="fileName"></span>
+            <button class="btn-remove" id="removeFile" title="파일 제거">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <button class="btn btn-accent" id="analyzeBtn" style="display:none;">
+            <i class="fas fa-magic"></i> 분석 시작
+          </button>
         </div>
 
-        <div class="upload-info" id="uploadInfo" style="display:none;">
-          <div class="file-details">
-            <span class="file-icon">🎵</span>
-            <div class="file-meta">
-              <div class="file-name" id="fileName">파일명.mp3</div>
-              <div class="file-size" id="fileSize">0 MB</div>
+        <!-- Processing Status -->
+        <div class="processing-status" id="processingStatus" style="display:none;">
+          <div class="status-header">
+            <i class="fas fa-spinner fa-spin"></i>
+            <h3>분석 중...</h3>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <p class="status-text" id="statusText">음성 파일을 텍스트로 변환하고 있습니다...</p>
+        </div>
+
+        <!-- Analysis Result -->
+        <div class="analysis-result" id="analysisResult" style="display:none;">
+          <div class="result-header">
+            <h2>분석 결과</h2>
+            <span id="deepfakeBadge" class="df-badge" style="display:none;">딥페이크 의심</span>
+            <button class="btn btn-outline-small" id="newAnalysisBtn">
+              <i class="fas fa-redo"></i> 새로운 분석
+            </button>
+          </div>
+
+          <!-- Risk Score -->
+          <div class="risk-score-card">
+            <div class="risk-meter-container">
+              <svg class="risk-meter" viewBox="0 0 200 120">
+                <path class="meter-bg" d="M 20 100 A 80 80 0 0 1 180 100"></path>
+                <path class="meter-fill" id="meterFill" d="M 20 100 A 80 80 0 0 1 180 100"></path>
+              </svg>
+              <div class="risk-percentage" id="riskPercentage">0%</div>
             </div>
-            <button class="remove-file-btn" id="removeFileBtn">✕</button>
+            <div class="risk-label-container">
+              <h3 id="riskLabel">분석 중...</h3>
+              <p id="riskDescription">위험도를 측정하고 있습니다</p>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div class="analysis-status-card">
-        <div class="status-row">
-          <div class="status-label">진행도</div>
-          <div class="progress-track">
-            <div class="progress-fill" id="analysisProgressBar"></div>
-          </div>
-          <div class="status-percent" id="analysisProgressPercent">0%</div>
-        </div>
-        <p class="status-helper">업로드한 통화 파일을 전사하고 RAG 분석을 수행합니다.</p>
-      </div>
-
-      <div class="analysis-overview">
-        <div class="progress-card">
-          <div class="progress-circle" id="analysisProgressCircle" data-progress="0">
-            <div class="progress-value">0%</div>
-            <div class="progress-label" id="analysisVerdict">근거 부족</div>
-          </div>
-          <p class="progress-subtext" id="analysisSummary">증거 자료가 부족하여 판별할 수 없습니다.</p>
-        </div>
-
-        <div class="result-card result-card-full">
-          <div class="card-header">
-            <span class="card-icon">📝</span>
-            <h2>전사 결과</h2>
-          </div>
-          <!-- JS가 textContent로 채우는 영역 -->
-          <div id="transcriptResult" class="card-box mono"></div>
-        </div>
-      </div>
-
-      <div class="result-grid-bottom">
-        <div class="result-card">
-          <div class="card-header">
-            <span class="card-icon">🔍</span>
-            <h2>탐지 근거</h2>
-          </div>
-          <!-- JS가 li를 동적 생성 -->
-          <ul id="evidenceList" class="list"></ul>
-        </div>
-
-        <div class="result-card">
-          <div class="card-header">
-            <span class="card-icon">🛡️</span>
-            <h2>대응 방법</h2>
-          </div>
-          <!-- JS가 li를 동적 생성 -->
-          <ul id="actionList" class="list"></ul>
-        </div>
-      </div>
-
-      <div class="quick-action-grid">
-        <button class="quick-action" data-action="police">
-          <span class="action-icon">🚨</span>
-          <span class="action-title">경찰 신고</span>
-          <span class="action-subtitle">112</span>
-        </button>
-        <button class="quick-action" data-action="financial">
-          <span class="action-icon">🏦</span>
-          <span class="action-title">금감원 신고</span>
-          <span class="action-subtitle">1332</span>
-        </button>
-        <button class="quick-action" data-action="report">
-          <span class="action-icon">📄</span>
-          <span class="action-title">리포트 저장</span>
-          <span class="action-subtitle">JSON 다운로드</span>
-        </button>
-        <button class="quick-action" data-action="faq">
-          <span class="action-icon">📞</span>
-          <span class="action-title">상담 연결</span>
-          <span class="action-subtitle">전문상담원 배정</span>
-        </button>
-      </div>
-
-      <div class="action-buttons">
-        <a href="voicephishing-info.html" class="btn btn-secondary">보이스피싱 사례집</a>
-        <a href="index.html" class="btn btn-outline">홈으로 돌아가기</a>
+          <!-- AI Analysis -->
+<div class="result-section">
+  <h3>AI 분석 결과</h3>
+  <div class="analysis-details">
+    <div class="detail-card">
+      <div class="detail-icon warning"><i class="fas fa-exclamation-triangle"></i></div>
+      <div class="detail-content">
+        <!-- 전사 결과 → 핵심 문장/표현 -->
+        <h4>핵심 문장/표현</h4>
+        <div class="keywords" id="suspiciousKeywords"></div>
       </div>
     </div>
-  </main>
 
-  <footer>
+    <div class="detail-card">
+      <div class="detail-icon danger"><i class="fas fa-shield-alt"></i></div>
+      <div class="detail-content">
+        <!-- 탐지 근거 → 의심 근거 -->
+        <h4>의심 근거</h4>
+        <div class="risk-factors" id="riskFactors"></div>
+      </div>
+    </div>
+
+    <div class="detail-card">
+      <div class="detail-icon safe"><i class="fas fa-lightbulb"></i></div>
+      <div class="detail-content">
+        <!-- 대응 방법 → 권장 조치 -->
+        <h4>권장 조치</h4>
+        <div class="recommendations" id="recommendations"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+          <!-- Actions -->
+          <div class="action-buttons">
+            <button class="btn btn-primary" id="downloadReport">
+              <i class="fas fa-download"></i> 분석 결과 다운로드
+            </button>
+            <button class="btn btn-outline" id="reportScam">
+              <i class="fas fa-flag"></i> 보이스피싱 신고
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Info Section -->
+  <section class="info-section">
     <div class="container">
-      <p>&copy; 2025 보이스피싱 예방 센터. 모든 권리 보유.</p>
+      <h2>음성 분석 서비스 안내</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <i class="fas fa-robot"></i>
+          <h3>AI 기반 분석</h3>
+          <p>Google Gemini AI를 활용하여 보이스피싱 패턴을 정밀하게 분석합니다.</p>
+        </div>
+        <div class="info-card">
+          <i class="fas fa-lock"></i>
+          <h3>개인정보 보호</h3>
+          <p>업로드된 파일은 분석 후 즉시 삭제되며 저장되지 않습니다.</p>
+        </div>
+        <div class="info-card">
+          <i class="fas fa-clock"></i>
+          <h3>빠른 분석</h3>
+          <p>평균 30초 이내에 분석 결과를 확인할 수 있습니다.</p>
+        </div>
+        <div class="info-card">
+          <i class="fas fa-chart-line"></i>
+          <h3>높은 정확도</h3>
+          <p>98.7%의 높은 정확도로 보이스피싱을 탐지합니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2>의심스러운 통화가 있으신가요?</h2>
+        <p>지금 바로 음성 파일을 분석하여 보이스피싱 여부를 확인하세요</p>
+        <button class="btn btn-primary" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+          지금 분석하기
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3 class="footer-logo">SumTech</h3>
+          <p>보이스피싱 예방을 위한 AI 기반 솔루션을 제공합니다.</p>
+        </div>
+        <div class="footer-section">
+          <h4>서비스</h4>
+          <ul>
+            <li><a href="service1.html">음성 분석</a></li>
+            <li><a href="service2.html">서비스 2</a></li>
+            <li><a href="service3.html">서비스 3</a></li>
+            <li><a href="service4.html">서비스 4</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>긴급 신고</h4>
+          <ul>
+            <li>경찰신고: 112</li>
+            <li>금융감독원: 1332</li>
+            <li>보이스피싱: 1588-2112</li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>법적 고지</h4>
+          <ul>
+            <li><a href="#">이용약관</a></li>
+            <li><a href="#">개인정보처리방침</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 SumTech. All rights reserved.</p>
+      </div>
     </div>
   </footer>
 
-  <script src="/static/voice-changer.js"></script>
+  <!-- ✅ 정적 파일: FastAPI/Jinja 경로 -->
+  <script defer src="{{ url_for('static', path='voice-analysis.js') }}"></script>
 </body>
 </html>

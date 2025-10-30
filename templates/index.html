@@ -3,107 +3,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>보이스피싱 예방 센터</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <title>SumTech - 금융 자문 성장 솔루션</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="background-pattern"></div>
-    
-    <!-- 메인 히어로 섹션 -->
-    <section class="main-container" id="hero">
-        <div class="content-wrapper">
-            <div class="logo-section">
-                <div class="logo-badge">보이스피싱</div>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-text">SumTech</span>
             </div>
-            
-            <div class="hero-section">
-                <h1 class="main-title">보이스피싱, 당신의 안전을 위협합니다</h1>
-                <p class="main-description">
-                    피싱사이트의 함정 안전한 디지털 생활을 시작하세요. 최신 피싱 수법을 파악하고<br>
-                    예방 수칙을 익혀 소중한 자산을 보호하세요
-                </p>
-                
-                <div class="button-group">
-                    <button class="btn btn-primary" onclick="scrollToNews()">
-                        <span class="btn-icon">📞</span>
-                        피싱 신고하기
-                    </button>
-                    <button class="btn btn-secondary" onclick="scrollToServices()">
-                        <span class="btn-icon">🛡️</span>
-                        예방 수칙 알아보기
-                    </button>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">홈</a></li>
+                <li><a href="/scan/voice" class="nav-link">통화위험체크</a></li>
+                <li><a href="/scan/message" class="nav-link">메세지 위협체크</a></li>
+                <li><a href="/api/chat-bot" class="nav-link active">모의대화 코칭</a></li>
+                <li><a href="service4.html" class="nav-link">상황 퀴즈</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>고객 확보 성장을<br><span class="highlight">활성화하세요</span></h1>
+                    <p>최신 마케팅, 비영업 추천 전략 및 운영 우수성을 통해 금융 자문 실무를 구축, 성장 및 확장할 수 있도록 지원합니다.</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary">
+                            지금 시작하기
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <button class="btn btn-outline">
+                            서비스 살펴보기
+                        </button>
+                    </div>
                 </div>
-                
-                <div class="scroll-indicator">
-                    <div class="scroll-arrow" onclick="scrollToNews()">
-                        <span>↓</span>
-                        <p>더 많은 정보 보기</p>
+                <div class="hero-stats">
+                    <div class="stats-card">
+                        <h3>고객이 경험한 성장:</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-label">추천 성장률</div>
+                                <div class="stat-value">87%</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">고객 확보율</div>
+                                <div class="stat-value">58%</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">AUM 성장률</div>
+                                <div class="stat-value">53%</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">수익 성장률</div>
+                                <div class="stat-value">53%</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 뉴스 섹션 -->
-    <section id="news" class="news-section">
+    <!-- Services Section -->
+    <section id="services" class="services">
         <div class="container">
-            <h2>최신 업무 및 뉴스</h2>
-            <p class="section-subtitle">최신 정보소식과 업무 뉴스를 정보 가치 높은 콘텐츠로 제공합니다</p>
-            
-            <div class="news-card">
-                <div class="news-date">2025년 10월 30일</div>
-                <h3>상황별 투자 시기 정보</h3>
-                <p>투자를 위해서 본 정보소식과 시기가 중요하다 생각고 경고합니다. 투자 수익률을 보장하지는 않습니다만 경우에는 경우 그렇게 수익이 좋습니다.</p>
-                <div class="news-meta">
-                    <span>경험정, 보이스</span>
-                    <span>경험정의 보이스에서 실</span>
-                    <button class="read-more">더보기</button>
-                </div>
+            <div class="section-header">
+                <h2>우리의 서비스</h2>
+                <p>금융 자문 비즈니스 성장을 위한 맞춤형 솔루션을 제공합니다</p>
             </div>
-            
-            <div class="pagination">
-                <span class="page-num active">1</span>
-                <span class="page-num">2</span>
-                <span class="page-num">3</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- 핵심 기능 섹션 -->
-    <section id="services" class="section">
-        <div class="container">
-            <h2>핵심 기능</h2>
-            <p class="section-subtitle">당사이트의 주요 기능들을 한눈에 확인하고 원하는 정보를 빠르게 찾으세요</p>
             <div class="services-grid">
-                <div class="service-card">
-                    <div class="service-icon">🎙️</div>
-                    <h3>음성 변조 서비스</h3>
-                    <p>보이스피싱 전화 내용을 실시간으로 변조하여 안전하게 보호합니다</p>
-                    <button class="service-btn">자세히 보기</button>
+                <a href="service1.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-number">1</div>
+                        <h3>통화위험체크</h3>
+                        <p>음성 파일을 분석해 딥페이크 여부와 보이스피싱 위험도를 확인합니다.</p>
+                    </div>
+                </a>
+                <a href="service2.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-number">2</div>
+                        <h3>메세지 위협체크</h3>
+                        <p>받은 문자나 링크를 검사해 악성 URL 여부를 판별합니다.</p>
+                    </div>
+                </a>
+                <a href="service3.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-number">3</div>
+                        <h3>모의대화 코칭</h3>
+                        <p>실제 보이스피싱 시나리오로 대화하며 올바른 대응법을 배웁니다.</p>
+                    </div>
+                </a>
+                <a href="service4.html" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-number">4</div>
+                        <h3>상황 퀴즈</h3>
+                        <p>다양한 보이스피싱 상황을 문제로 풀며 대응력을 점검합니다.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+    <!-- Team Section -->
+    <section id="team" class="team">
+        <div class="container">
+            <div class="section-header">
+                <h2>전문가 팀</h2>
+                <p>풍부한 경험과 전문성을 갖춘 컨설턴트들이 귀사의 성장을 돕습니다</p>
+            </div>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>김태현</h3>
+                    <p class="team-role">대표 컨설턴트</p>
+                    <p>20년 이상의 금융 자문 경험을 보유한 전문가로, 수백 개의 기업 성장을 지원했습니다.</p>
                 </div>
-                <div class="service-card">
-                    <div class="service-icon">🔍</div>
-                    <h3>URL 위험도 검사</h3>
-                    <p>문자나 메시지의 링크가 안전한지 실시간으로 검사합니다</p>
-                    <button class="service-btn">자세히 보기</button>
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>이수진</h3>
+                    <p class="team-role">마케팅 전략가</p>
+                    <p>디지털 마케팅과 고객 확보 전략 분야의 선도적인 전문가입니다.</p>
                 </div>
-                <div class="service-card">
-                    <div class="service-icon">🤖</div>
-                    <h3>AI 챗봇 상담</h3>
-                    <p>보이스피싱 관련 궁금한 점을 AI 챗봇과 실시간 상담하세요</p>
-                    <button class="service-btn">자세히 보기</button>
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>박준혁</h3>
+                    <p class="team-role">운영 최적화 전문가</p>
+                    <p>프로세스 혁신과 효율성 개선을 통해 비즈니스 가치를 창출합니다.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 푸터 -->
-    <footer>
+    <!-- Insights Section -->
+    <section id="insights" class="insights">
         <div class="container">
-            <p>&copy; 2025 보이스피싱 예방 센터. 모든 권리 보유.</p>
+            <div class="section-header">
+                <h2>인사이트</h2>
+                <p>금융 자문 업계의 최신 트렌드와 전략을 공유합니다</p>
+            </div>
+            <div class="insights-grid">
+                <article class="insight-card">
+                    <div class="insight-image">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="insight-content">
+                        <span class="insight-date">2024.10.15</span>
+                        <h3>2024년 금융 자문 업계 트렌드</h3>
+                        <p>디지털 전환과 개인화된 서비스가 금융 자문 업계의 주요 트렌드로 부상하고 있습니다.</p>
+                        <a href="#" class="read-more">더 읽기 →</a>
+                    </div>
+                </article>
+                <article class="insight-card">
+                    <div class="insight-image">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <div class="insight-content">
+                        <span class="insight-date">2024.10.08</span>
+                        <h3>고객 추천 전략의 힘</h3>
+                        <p>성공적인 추천 프로그램을 통해 고객 기반을 2배 이상 확장한 사례를 소개합니다.</p>
+                        <a href="#" class="read-more">더 읽기 →</a>
+                    </div>
+                </article>
+                <article class="insight-card">
+                    <div class="insight-image">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="insight-content">
+                        <span class="insight-date">2024.09.30</span>
+                        <h3>AI를 활용한 고객 관리</h3>
+                        <p>인공지능 기술을 활용하여 고객 경험을 개선하고 운영 효율성을 높이는 방법을 알아봅니다.</p>
+                        <a href="#" class="read-more">더 읽기 →</a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="contact-wrapper">
+                <div class="contact-info">
+                    <h2>상담 신청</h2>
+                    <p>귀사의 성장을 위한 맞춤형 솔루션을 제안해 드립니다.</p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <strong>이메일</strong>
+                                <p>contact@sumtech.co.kr</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <strong>전화</strong>
+                                <p>02-1234-5678</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <strong>위치</strong>
+                                <p>서울시 강남구 테헤란로 123</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form-wrapper">
+                    <form id="contactForm" class="contact-form">
+                        <div class="form-group">
+                            <input type="text" id="name" placeholder="이름" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" placeholder="이메일" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" id="phone" placeholder="연락처" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="message" rows="5" placeholder="문의 내용" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">
+                            상담 신청하기
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-logo">SumTech</h3>
+                    <p>금융 자문 비즈니스의 성장을 위한 혁신적인 솔루션을 제공합니다.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>서비스</h4>
+                    <ul>
+                        <li><a href="service1.html">통화위험체크</a></li>
+                        <li><a href="service2.html">메세지 위협체크</a></li>
+                        <li><a href="service3.html">모의대화 코칭</a></li>
+                        <li><a href="service4.html">상황 퀴즈</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>회사</h4>
+                    <ul>
+                        <li><a href="#team">팀 소개</a></li>
+                        <li><a href="#insights">인사이트</a></li>
+                        <li><a href="#contact">문의하기</a></li>
+                        <li><a href="#">채용</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>법적 고지</h4>
+                    <ul>
+                        <li><a href="#">이용약관</a></li>
+                        <li><a href="#">개인정보처리방침</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 SumTech. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 
-<script src="/static/script.js"></script>
+  <script defer src="{{ url_for('static', path='voice-analysis.js') }}"></script>
 </body>
 </html>
