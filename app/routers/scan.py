@@ -32,7 +32,7 @@ async def scan_voice(file: UploadFile = File(...), k: int = 5):
         generate_rag_answer_from_audio,
         audio_bytes,
         file.content_type,
-        k
+        k,
     )
 
     try:
@@ -45,38 +45,81 @@ async def scan_voice(file: UploadFile = File(...), k: int = 5):
             "reference_chunk_id": [],
         }
 
+    if not isinstance(data, dict):
+        data = {"raw": rag_json}
+
+    if "evidence" not in data:
+        reasons = data.get("top_k_reasons") or []
+        evidence_texts = []
+        for r in reasons:
+            if not isinstance(r, dict):
+                continue
+            rank = r.get("rank")
+            reason = r.get("reason")
+            evs = r.get("evidence") or []
+            ev_join = ", ".join(str(x) for x in evs)
+            line = f"• {reason}" if reason else ""
+            if ev_join:
+                line += f"\n  - 근거: {ev_join}"
+            if line:
+                evidence_texts.append(line)
+        data["evidence"] = "\n\n".join(evidence_texts) if evidence_texts else "근거 없음"
+
+    if "solution" not in data:
+        actions = data.get("recommended_actions") or []
+        action_texts = []
+        for a in actions:
+            if not isinstance(a, dict):
+                continue
+            pr = a.get("priority")
+            act = a.get("action")
+            rsn = a.get("reason")
+            line = f"[{pr}] {act}" if pr and act else (act or "")
+            if rsn:
+                line += f"\n- 이유: {rsn}"
+            if line:
+                action_texts.append(line)
+        data["solution"] = "\n\n".join(action_texts) if action_texts else "대응 가이드 없음"
+
     if isinstance(data, dict):
-        if "evidence" not in data:
-            reasons = data.get("top_k_reasons") or []
-            evidence_texts = []
-            for r in reasons:
-                rank = r.get("rank")
-                reason = r.get("reason")
-                evs = r.get("evidence") or []
-                line = f"#{rank}. {reason}" if rank is not None else f"{reason}"
-                if evs:
-                    line += f"\n - 근거: {', '.join(evs)}"
+        tkr = data.get("top_k_reasons")
+        if isinstance(tkr, list) and tkr:
+            formatted_evidence = []
+            for r in tkr:
+                if not isinstance(r, dict):
+                    continue
+                ev_list = ", ".join(str(x) for x in (r.get("evidence") or []))
+                reason = r.get("reason") or ""
                 if reason:
-                    evidence_texts.append(line)
-            data["evidence"] = "\n\n".join(evidence_texts) if evidence_texts else "근거 없음"
-        if "solution" not in data:
-            actions = data.get("recommended_actions") or []
-            action_texts = []
-            for a in actions:
-                pr = a.get("priority")
-                act = a.get("action")
-                rsn = a.get("reason")
-                line = f"{f'[{pr}] ' if pr else ''}{act}" if act else ""
-                if rsn:
-                    line += f"\n - 이유: {rsn}"
-                if line:
-                    action_texts.append(line)
-            data["solution"] = "\n\n".join(action_texts) if action_texts else "대응 가이드 없음"
+                    block = f"• {reason}"
+                    if ev_list:
+                        block += f"\n  - 근거: {ev_list}"
+                    formatted_evidence.append(block)
+            if formatted_evidence:
+                data["formatted_evidence"] = "\n\n".join(formatted_evidence)
+
+        ra = data.get("recommended_actions")
+        if isinstance(ra, list) and ra:
+            formatted_actions = []
+            for a in ra:
+                if not isinstance(a, dict):
+                    continue
+                pr = a.get("priority") or ""
+                act = a.get("action") or ""
+                rsn = a.get("reason") or ""
+                if act:
+                    block = f"[{pr}] {act}" if pr else act
+                    if rsn:
+                        block += f"\n- 이유: {rsn}"
+                    formatted_actions.append(block)
+            if formatted_actions:
+                data["formatted_actions"] = "\n\n".join(formatted_actions)
 
     data["_transcript"] = transcript
     data["_filename"] = file.filename
     print(json.dumps(data, ensure_ascii=False, indent=2))
     return JSONResponse(content=data, media_type="application/json")
+
 
 @router.post("/message")
 def scan_message(text: str = Form(...)):
