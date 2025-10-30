@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>보이스피싱 훈련 챗봇</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root{--bg:#0b1020;--fg:#e6edf3;--muted:#9aa4b2;--card:#121a31;--border:#22304d;--accent:#6aa0ff;--warn:#f5a524;}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--fg);font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Apple SD Gothic Neo,Malgun Gothic}
+    header{padding:14px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(11,16,32,.9);backdrop-filter:saturate(1.2) blur(6px)}
+    h1{margin:0;font-size:18px}
+    .wrap{max-width:960px;margin:16px auto;padding:0 12px 28px}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .col{flex:1 1 280px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:12px}
+    .pad{padding:12px}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    select,input{width:100%;background:#0f1730;color:var(--fg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;outline:none}
+    .btn{background:#162446;border:1px solid var(--border);color:var(--fg);padding:10px 14px;border-radius:10px;cursor:pointer}
+    .btn.primary{background:var(--accent);border-color:#5b8fee;color:#0b1020;font-weight:600}
+    .btn.warn{background:var(--warn);border-color:#e89519;color:#0b1020;font-weight:600}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap}
+    .chat{display:flex;flex-direction:column;gap:10px;height:60vh;padding:14px;overflow:auto}
+    .msg{max-width:85%;padding:10px 12px;border-radius:12px;border:1px solid var(--border);white-space:pre-wrap;line-height:1.45}
+    .msg.user{margin-left:auto;background:#13223f}
+    .msg.bot{margin-right:auto;background:#111b34}
+    .msg.sys{margin:6px auto 0 auto;background:#0f1730;border-style:dashed;color:var(--muted);font-size:12px}
+    .small{font-size:12px;color:var(--muted)}
+    .hint{font-size:12px;color:var(--muted);margin-top:6px}
+    .row-end{display:flex;gap:8px;align-items:center;justify-content:flex-end}
+    .sep{height:1px;background:var(--border);margin:10px 0}
+    /* Modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50;}
+    .modal{width:min(880px,92vw);max-height:80vh;overflow:auto;background:#0f1730;border:1px solid var(--border);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.4);}
+    .modal .hd{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border)}
+    .modal .bd{padding:14px}
+    .modal .hd h3{margin:0;font-size:16px}
+    .markdown h1,.markdown h2,.markdown h3{margin:.6em 0 .3em}
+    .markdown p,.markdown li{line-height:1.55}
+    .markdown code{background:#111b34;padding:.1em .35em;border-radius:6px}
+    .markdown pre{background:#111b34;padding:10px;border-radius:10px;overflow:auto}
+    .markdown ul{padding-left:20px}
+  </style>
+</head>
+<body>
+<header><h1>📞 보이스피싱 훈련 챗봇</h1></header>
+
+<div class="wrap">
+  <div class="row">
+    <div class="col">
+      <div class="card pad">
+        <label>시나리오</label>
+        <select id="scenario"></select>
+        <div id="scenarioDesc" class="hint"></div>
+        <div class="sep"></div>
+        <label>오프너(첫 멘트)</label>
+        <div id="opener" class="small"></div>
+        <div class="sep"></div>
+        <div class="toolbar">
+          <button class="btn primary" id="btnBegin">전화 연결(봇 선 멘트)</button>
+          <button class="btn" id="btnReport">결과 보러가기</button>
+        </div>
+        <div class="hint">개인정보 입력 금지 · 서버에서 자동 마스킹됨</div>
+        <div class="hint">백엔드 엔드포인트: <code>/api/meta</code>, <code>/api/begin</code>, <code>/api/chat</code>, <code>/api/analyze_json</code></div>
+      </div>
+    </div>
+
+    <div class="col" style="flex:2 1 520px">
+      <div class="card" style="display:flex;flex-direction:column;height:72vh">
+        <div class="chat" id="chat"></div>
+        <div class="pad" style="display:flex;gap:8px">
+          <input id="msg" type="text" placeholder="메시지를 입력하세요 (Enter 전송)" />
+          <button class="btn primary" id="btnSend" disabled>전송</button>
+        </div>
+        <div class="pad row-end">
+          <span class="small">세션: <code id="sid">—</code></span>
+          <span class="small">모델: <code id="model">—</code></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="mdModal" class="modal-backdrop">
+  <div class="modal">
+    <div class="hd">
+      <h3>세션 요약 리포트</h3>
+      <div style="display:flex; gap:8px">
+        <button id="btnDl" class="btn">다운로드(.md)</button>
+        <button id="btnClose" class="btn primary">닫기</button>
+      </div>
+    </div>
+    <div class="bd">
+      <div id="mdBody" class="markdown small">(로딩 중…)</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const apiBase = "/api";
+
+let meta = {scenarios:{}, openers:{}, model:""};
+let sid = null;
+let scenario = null;
+let history = [];
+
+const el = {
+  scenario: document.getElementById('scenario'),
+  scenarioDesc: document.getElementById('scenarioDesc'),
+  opener: document.getElementById('opener'),
+  chat: document.getElementById('chat'),
+  msg: document.getElementById('msg'),
+  btnSend: document.getElementById('btnSend'),
+  btnBegin: document.getElementById('btnBegin'),
+  btnReport: document.getElementById('btnReport'),
+  sid: document.getElementById('sid'),
+  model: document.getElementById('model'),
+};
+
+function addMsg(role,text){
+  const div=document.createElement('div');
+  div.className='msg '+(role==='user'?'user':role==='model'?'bot':'sys');
+  div.textContent=text;
+  el.chat.appendChild(div);
+  el.chat.scrollTop=el.chat.scrollHeight;
+}
+function setScenarioUI(name){
+  scenario=name;
+  el.scenario.value=name;
+  el.scenarioDesc.textContent=meta.scenarios[name]||"";
+  el.opener.textContent=meta.openers[name]||"전화드렸습니다. 본인 확인을 위해 잠시만요.";
+}
+async function loadMeta(){
+  addMsg('sys','/api/meta 로딩 중…');
+  const res=await fetch(apiBase+"/meta");
+  if(!res.ok)throw new Error("meta 실패 "+res.status);
+  meta=await res.json();
+  el.scenario.innerHTML="";
+  Object.keys(meta.scenarios).forEach(k=>{
+    const opt=document.createElement('option');
+    opt.value=k; opt.textContent=k; el.scenario.appendChild(opt);
+  });
+  setScenarioUI(Object.keys(meta.scenarios)[0]);
+  el.model.textContent=meta.model||'—';
+  addMsg('sys','준비 완료. 시나리오를 선택하고 "전화 연결"을 누르세요.');
+}
+el.scenario.addEventListener('change',()=>setScenarioUI(el.scenario.value));
+
+el.btnBegin.addEventListener('click',async()=>{
+  try{
+    if(!scenario){addMsg('sys','시나리오를 먼저 선택하세요.');return;}
+    addMsg('user','(전화 연결)');
+    const res=await fetch(apiBase+"/begin",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({scenario})});
+    const data=await res.json();
+    if(!res.ok)throw new Error(data.detail||'begin 실패');
+    sid=data.sid||Date.now();
+    el.sid.textContent=sid;
+    const text=data.text||"(응답 없음)";
+    addMsg('model',text);
+    el.btnSend.disabled=false;
+    el.msg.focus();
+  }catch(err){addMsg('sys','(오류) '+err);}
+});
+
+async function sendMessage(){
+  const message=el.msg.value.trim();
+  if(!message)return;
+  if(!sid){addMsg('sys','먼저 "전화 연결"을 눌러 세션을 시작하세요.');return;}
+  el.msg.value="";
+  addMsg('user',message);
+  try{
+    const res=await fetch(apiBase+"/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sid,scenario,message})});
+    const data=await res.json();
+    if(!res.ok)throw new Error(data.detail||'chat 실패');
+    const text=data.text||"(응답 없음)";
+    addMsg('model',text);
+  }catch(err){addMsg('sys','(오류) '+err);}
+}
+el.btnSend.addEventListener('click',sendMessage);
+el.msg.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}
+});
+
+/* ----- Modal ----- */
+function mdToHtml(md){
+  let h=md.replace(/^### (.*)$/gm,'<h3>$1</h3>')
+          .replace(/^## (.*)$/gm,'<h2>$1</h2>')
+          .replace(/^# (.*)$/gm,'<h1>$1</h1>')
+          .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+          .replace(/`([^`]+)`/g,'<code>$1</code>')
+          .replace(/^- (.*)$/gm,'<li>$1</li>');
+  h=h.replace(/(<li>[\s\S]*?<\/li>)/g,'<ul>$1</ul>');
+  return h;
+}
+const modal={root:document.getElementById('mdModal'),body:document.getElementById('mdBody'),
+btnClose:document.getElementById('btnClose'),btnDl:document.getElementById('btnDl'),
+open(html){this.body.innerHTML=html;this.root.style.display='flex';},
+close(){this.root.style.display='none';}};
+modal.btnClose.addEventListener('click',()=>modal.close());
+
+el.btnReport.addEventListener('click',async()=>{
+  try{
+    if(!sid){addMsg('sys','세션이 없습니다. 먼저 "전화 연결"을 눌러 시작하세요.');return;}
+    addMsg('sys','요약 리포트 생성 중…');
+    const res=await fetch(apiBase+"/analyze_json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sid,scenario})});
+    const data=await res.json();
+    if(!res.ok)throw new Error(data.detail||'analyze_json 실패');
+    modal.open(mdToHtml(data.markdown||'(빈 리포트)'));
+    modal.btnDl.onclick=async()=>{
+      const resp=await fetch(apiBase+"/analyze",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sid,scenario})});
+      const blob=await resp.blob();
+      const a=document.createElement('a');
+      const url=URL.createObjectURL(blob);
+      a.href=url;a.download=`report_session_${sid}.md`;
+      document.body.appendChild(a);a.click();
+      URL.revokeObjectURL(url);a.remove();
+    };
+  }catch(err){addMsg('sys','(오류) '+err);}
+});
+
+loadMeta().catch(err=>addMsg('sys','(오류) 메타 로드 실패: '+err));
+</script>
+</body>
+</html>

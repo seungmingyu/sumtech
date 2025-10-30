@@ -4,6 +4,57 @@ from datetime import datetime
 from dotenv import load_dotenv
 import google.generativeai as genai
 
+def normalize_model_text(text: str) -> str:
+    """
+    - [ ... ] 대괄호를 모두 제거(안의 글자는 남김)
+    - 마크다운 강조 제거: **굵게**, __굵게__, *기울임*, _기울임_
+    - 라인 시작·끝의 큰따옴표만 감싸고 있으면 제거
+    - 완전히 동일한 라인은 한 번만 유지
+    - 연속된 빈 줄은 1개로 축약
+    """
+    # 1) [내용] -> 내용  (줄바꿈은 제외해 과매칭 방지)
+    text = re.sub(r"\[([^\[\]\n]+)\]", r"\1", text)
+
+    # 2) 마크다운 강조 제거
+    text = re.sub(r"\*\*([^\*\n]+)\*\*", r"\1", text)     # **bold**
+    text = re.sub(r"__([^_\n]+)__", r"\1", text)          # __bold__
+    text = re.sub(r"(?<!\*)\*([^\*\n]+)\*(?!\*)", r"\1", text)  # *italic*
+    text = re.sub(r"(?<!_)_([^_\n]+)_(?!_)", r"\1", text)       # _italic_
+
+    # 3) 라인 전체가 큰따옴표로만 감싸져 있으면 바깥 따옴표 제거
+    def strip_wrapping_quotes(line: str) -> str:
+        s = line.strip()
+        if len(s) >= 2 and s[0] == '"' and s[-1] == '"':
+            return s[1:-1]
+        return line
+
+    lines = [ln.rstrip() for ln in text.splitlines()]
+    # 3-1) 따옴표 처리
+    lines = [strip_wrapping_quotes(ln) for ln in lines]
+
+    # 4) 라인 단위 중복 제거
+    seen = set()
+    out_lines = []
+    for ln in lines:
+        if ln.strip() == "":
+            out_lines.append("")
+            continue
+        if ln not in seen:
+            out_lines.append(ln)
+            seen.add(ln)
+        # 이미 본 라인은 스킵
+
+    # 5) 연속 빈 줄 축약
+    compact = []
+    for ln in out_lines:
+        if ln == "":
+            if not compact or compact[-1] != "":
+                compact.append("")
+        else:
+            compact.append(ln)
+
+    return "\n".join(compact).strip()
+
 # ---------- 기본 설정 ----------
 SESS_DIR = pathlib.Path("sessions")
 SESS_DIR.mkdir(exist_ok=True)
@@ -117,7 +168,7 @@ def pick_scenario() -> str:
     for i,k in enumerate(keys, 1):
         print(f"  {i}. {k}")
     while True:
-        sel = input("번호를 선택하세요: ").strip()
+        sel = input("\n번호를 선택하세요: ").strip()
         if sel.isdigit() and 1 <= int(sel) <= len(keys):
             return keys[int(sel)-1]
         print("다시 입력해주세요.")
@@ -128,10 +179,11 @@ HELP = """\
   /list           세션 파일 목록
   /switch N       N번 세션으로 전환
   /scenario       현재 시나리오 다시 표시
-  /analyze        현 세션 대화 전체를 분석(잘한 점/아쉬운 점/위험 신호/대안/점수)하고 보고서 저장
+  /analyze        현 세션 대화 전체를 분석(잘한 점/개선할 점/대안/점수)하고 보고서 저장 한줄 요약
   /help           도움말
   /quit           종료
-일반 텍스트는 메시지로 전송됩니다.
+
+  메시지를 입력하면 챗봇과 대화합니다.
 """
 
 def start_call_and_print(chat, sid: int, scenario: str):
@@ -142,11 +194,13 @@ def start_call_and_print(chat, sid: int, scenario: str):
         "훈련 규칙(불법/민감정보 금지, 자리표시자만)을 지켜라.\n"
         f"- 상황 힌트: {opener}"
     )
+
     try:
         resp = chat.send_message(begin_prompt)
-        first_line = resp.text
+        first_line = normalize_model_text(resp.text)  # ← 후처리 적용
     except Exception as e:
         first_line = f"(오류) {e}"
+
     print(f"[#{sid}] Scam> {first_line}")
     save_event(sid, "model", first_line)
 
@@ -183,20 +237,19 @@ def analyze_session(sid: int, scenario: str):
     coach = genai.GenerativeModel(
         MODEL_NAME,
         system_instruction=(
-            "너는 보이스피싱 예방 코치다. 아래 훈련 대화(사용자 vs 사기범 시뮬레이터)를 평가해라.\n"
-            "- 목적: 사용자가 보이스피싱 정황을 인지하고 안전하게 대응하도록 훈련.\n"
-            "- 금칙: 실제 법률 자문처럼 단정 금지. 개인정보 재요구 금지.\n"
-            "- 산출: 한국어 Markdown으로 간결·구조화하여 제공.\n"
+            "너는 보이스피싱 예방 코치다. 아래 훈련 대화를 짧게 평가한다.\n"
+            "- 목적: 사용자가 정황을 인지하고 안전하게 대응하도록 돕기.\n"
+            "- 금칙: 실제 법률 자문처럼 단정 금지, 개인정보 재요구 금지.\n"
+            "- 형식: 한국어 Markdown, 간결하게.\n"
             "섹션:\n"
-            "1) 요약(2~3문장)\n"
-            "2) 잘한 점(불릿 3~6)\n"
-            "3) 개선할 점(불릿 3~6)\n"
-            "4) 위험 신호 포착 순간(대화 일부를 인용 → 왜 위험한지)\n"
-            "5) 다음에 이렇게 말해보세요(대안 멘트 3~5개, 짧고 실천적)\n"
-            "6) 종합 점수(0~100)와 레벨(초급/중급/상급)\n"
-            "7) 즉시 실행 체크리스트(최대 3개)\n"
+            "1) 한줄 요약(1문장)\n"
+            "2) 잘한 점(불릿 최대 3개, 각 1문장)\n"
+            "3) 개선할 점(불릿 최대 3개, 각 1문장)\n"
+            "4) 다음에 이렇게 말해보세요(불릿 3개, 각 1문장)\n"
+            "5) 점수(0~100)와 레벨(초/중/상)\n"
         )
     )
+
 
     prompt = (
         f"[시나리오] {scenario}\n\n"
@@ -235,7 +288,7 @@ def analyze_session(sid: int, scenario: str):
     print(f"\n완료: Markdown 리포트 저장 → {out_path.resolve()}")
 
 def main():
-    print("=== 보이스 피싱 훈련 챗봇 (터미널) — 봇 선(先) 멘트 + 세션 분석 ===")
+    print("\n=== 보이스 피싱 훈련 챗봇 ===\n")
     print(HELP)
 
     sid = new_session_id()
@@ -302,7 +355,7 @@ def main():
         save_event(sid, "user", safe_user)
         try:
             resp = chat.send_message(safe_user)
-            text = resp.text
+            text = normalize_model_text(resp.text)
         except Exception as e:
             text = f"(오류) {e}"
         print(f"[#{sid}] Scam> {text}")
