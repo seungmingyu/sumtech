@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>서비스 3 - SumTech</title>
+    <title>모의대화 코칭 - SumTech</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -18,11 +18,11 @@
                 </a>
             </div>
             <ul class="nav-menu">
-                <li><a href="index.html" class="nav-link">Home</a></li>
-                <li><a href="service1.html" class="nav-link">1</a></li>
-                <li><a href="service2.html" class="nav-link">2</a></li>
-                <li><a href="service3.html" class="nav-link active">3</a></li>
-                <li><a href="service4.html" class="nav-link">4</a></li>
+                <li><a href="index.html" class="nav-link">홈</a></li>
+                <li><a href="service1.html" class="nav-link">통화위험체크</a></li>
+                <li><a href="service2.html" class="nav-link">메세지 위협체크</a></li>
+                <li><a href="service3.html" class="nav-link active">모의대화 코칭</a></li>
+                <li><a href="service4.html" class="nav-link">상황 퀴즈</a></li>
             </ul>
         </div>
     </nav>
@@ -30,147 +30,182 @@
     <!-- Service Detail Hero -->
     <section class="service-detail-hero">
         <div class="container">
-            <div class="breadcrumb">
-                <a href="index.html">Home</a> / <span>서비스 3</span>
-            </div>
-            <h1>서비스 3</h1>
-            <p class="hero-subtitle">금융 자문 비즈니스 성장을 위한 세 번째 핵심 솔루션</p>
+            <h1>모의대화 코칭</h1>
+            <p class="hero-subtitle">실제 보이스피싱 시나리오로 대화하며 올바른 대응법을 배웁니다</p>
         </div>
     </section>
 
-    <!-- Service Content -->
-    <section class="service-content">
+    <!-- Chat Simulation Section -->
+    <section class="chat-simulation-section">
         <div class="container">
-            <div class="content-grid">
-                <div class="content-main">
-                    <div class="content-section">
-                        <h2>서비스 개요</h2>
-                        <p>저희의 세 번째 서비스는 운영 효율성을 극대화하고 비용을 최적화합니다. 업무 프로세스 개선과 자동화를 통해 생산성을 높이고 핵심 업무에 집중할 수 있도록 지원합니다.</p>
-                    </div>
-
-                    <div class="content-section">
-                        <h2>주요 특징</h2>
-                        <div class="features-list">
-                            <div class="feature-item">
-                                <div class="feature-number">01</div>
-                                <div class="feature-content">
-                                    <h3>프로세스 분석</h3>
-                                    <p>현재 업무 프로세스를 정밀 분석하여 개선점을 도출합니다.</p>
-                                </div>
-                            </div>
-                            <div class="feature-item">
-                                <div class="feature-number">02</div>
-                                <div class="feature-content">
-                                    <h3>자동화 솔루션</h3>
-                                    <p>반복적인 업무를 자동화하여 시간과 비용을 절감합니다.</p>
-                                </div>
-                            </div>
-                            <div class="feature-item">
-                                <div class="feature-number">03</div>
-                                <div class="feature-content">
-                                    <h3>시스템 통합</h3>
-                                    <p>여러 시스템을 통합하여 업무 효율을 극대화합니다.</p>
-                                </div>
-                            </div>
-                            <div class="feature-item">
-                                <div class="feature-number">04</div>
-                                <div class="feature-content">
-                                    <h3>직원 교육</h3>
-                                    <p>새로운 시스템과 프로세스에 대한 체계적인 교육을 제공합니다.</p>
-                                </div>
-                            </div>
+            <div class="simulation-wrapper">
+                <!-- Left Panel - Settings -->
+                <div class="simulation-sidebar">
+                    <div class="sidebar-section">
+                        <label class="sidebar-label">시나리오</label>
+                        <div class="custom-select-wrapper">
+                            <select id="scenarioSelect" class="custom-select">
+                                <option value="">시나리오 선택</option>
+                                <option value="scenario1">택배 배송 사칭</option>
+                                <option value="scenario2">금융감독원 사칭</option>
+                                <option value="scenario3">경찰청 사칭</option>
+                                <option value="scenario4">가족 사칭</option>
+                                <option value="scenario5">은행원 사칭</option>
+                            </select>
+                            <i class="fas fa-chevron-down select-arrow"></i>
                         </div>
                     </div>
 
-                    <div class="content-section">
-                        <h2>제공 프로세스</h2>
-                        <div class="process-steps">
-                            <div class="process-step">
-                                <div class="step-circle">1</div>
-                                <h4>현황 진단</h4>
-                                <p>운영 현황 분석 및 평가</p>
-                            </div>
-                            <div class="process-arrow">→</div>
-                            <div class="process-step">
-                                <div class="step-circle">2</div>
-                                <h4>개선 설계</h4>
-                                <p>최적화 방안 설계</p>
-                            </div>
-                            <div class="process-arrow">→</div>
-                            <div class="process-step">
-                                <div class="step-circle">3</div>
-                                <h4>시스템 구축</h4>
-                                <p>솔루션 도입 및 구현</p>
-                            </div>
-                            <div class="process-arrow">→</div>
-                            <div class="process-step">
-                                <div class="step-circle">4</div>
-                                <h4>안정화</h4>
-                                <p>운영 정착 및 지원</p>
-                            </div>
+                    <div class="sidebar-section">
+                        <label class="sidebar-label">오프닝(첫 선 멘트)</label>
+                        <div class="opening-preview" id="openingPreview">
+                            시나리오를 선택하면 오프닝 멘트가 표시됩니다.
                         </div>
                     </div>
 
-                    <div class="content-section">
-                        <h2>기대 효과</h2>
-                        <div class="benefits-grid">
-                            <div class="benefit-card">
-                                <i class="fas fa-clock"></i>
-                                <h4>시간 절감</h4>
-                                <p>업무 시간 40% 단축</p>
-                            </div>
-                            <div class="benefit-card">
-                                <i class="fas fa-coins"></i>
-                                <h4>비용 절감</h4>
-                                <p>운영 비용 35% 감소</p>
-                            </div>
-                            <div class="benefit-card">
-                                <i class="fas fa-tasks"></i>
-                                <h4>생산성 향상</h4>
-                                <p>직원 생산성 50% 증가</p>
-                            </div>
-                            <div class="benefit-card">
-                                <i class="fas fa-smile"></i>
-                                <h4>만족도 상승</h4>
-                                <p>고객 만족도 85% 이상</p>
-                            </div>
-                        </div>
+                    <button class="btn btn-accent btn-full" id="startSimulationBtn">
+                        <i class="fas fa-phone-alt"></i>
+                        전화 연결(첫 선 멘트)
+                    </button>
+
+                    <button class="btn btn-outline btn-full" id="viewResultBtn" style="margin-top: 1rem;">
+                        <i class="fas fa-chart-bar"></i>
+                        결과 보러가기
+                    </button>
+
+                    <div class="sidebar-info">
+                        <h4><i class="fas fa-info-circle"></i> 개인정보 입력 금지</h4>
+                        <p>실제 개인정보는 절대 입력하지 마세요.</p>
+                        <p class="info-detail">시뮬레이션 목적으로만 사용하세요.</p>
                     </div>
                 </div>
 
-                <div class="content-sidebar">
-                    <div class="sidebar-card">
-                        <h3>상담 신청</h3>
-                        <p>전문가와 상담하고 맞춤형 제안을 받아보세요.</p>
-                        <form class="inquiry-form">
-                            <input type="text" placeholder="이름" required>
-                            <input type="email" placeholder="이메일" required>
-                            <input type="tel" placeholder="연락처" required>
-                            <textarea rows="4" placeholder="문의 내용" required></textarea>
-                            <button type="submit" class="btn btn-primary btn-full">상담 신청하기</button>
-                        </form>
-                    </div>
-
-                    <div class="sidebar-card">
-                        <h3>다른 서비스</h3>
-                        <ul class="related-services">
-                            <li><a href="service1.html">→ 서비스 1</a></li>
-                            <li><a href="service2.html">→ 서비스 2</a></li>
-                            <li><a href="service4.html">→ 서비스 4</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="sidebar-card contact-info">
-                        <h3>문의하기</h3>
-                        <div class="contact-detail">
-                            <i class="fas fa-phone"></i>
-                            <span>02-1234-5678</span>
-                        </div>
-                        <div class="contact-detail">
-                            <i class="fas fa-envelope"></i>
-                            <span>contact@sumtech.co.kr</span>
+                <!-- Right Panel - Chat Interface -->
+                <div class="simulation-chat">
+                    <div class="chat-header">
+                        <div class="chat-status">
+                            <i class="fas fa-circle" id="chatStatusIcon"></i>
+                            <span id="chatStatusText">대기 중...</span>
                         </div>
                     </div>
+
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-welcome">
+                            <i class="fas fa-shield-alt"></i>
+                            <h3>보이스피싱 시뮬레이션에 오신 것을 환영합니다</h3>
+                            <p>왼쪽에서 시나리오를 선택하고 '전화 연결' 버튼을 눌러 시작하세요.</p>
+                            <div class="welcome-tips">
+                                <div class="tip-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>실제 보이스피싱 대화를 시뮬레이션합니다</span>
+                                </div>
+                                <div class="tip-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>어떻게 대응하는지 평가하고 피드백을 제공합니다</span>
+                                </div>
+                                <div class="tip-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>실제 개인정보는 절대 입력하지 마세요</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-wrapper">
+                        <textarea 
+                            id="chatInput" 
+                            placeholder="메시지를 입력하세요 (Enter 전송)"
+                            rows="1"
+                            disabled
+                        ></textarea>
+                        <button class="btn btn-primary chat-send-btn" id="sendMessageBtn" disabled>
+                            전송
+                        </button>
+                    </div>
+
+                    <div class="chat-footer">
+                        <span>시뮬레이션 모드</span>
+                        <span class="divider">|</span>
+                        <span>로컬 실행</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works-section">
+        <div class="container">
+            <h2>시뮬레이션 진행 방법</h2>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>시나리오 선택</h3>
+                    <p>다양한 보이스피싱 유형 중 하나를 선택합니다</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>대화 시작</h3>
+                    <p>AI가 실제 보이스피싱범처럼 대화를 시작합니다</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>대응 연습</h3>
+                    <p>직접 메시지를 입력하며 대응 방법을 연습합니다</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>결과 확인</h3>
+                    <p>대응 능력을 평가하고 개선 방안을 확인합니다</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scenarios Info Section -->
+    <section class="scenarios-info-section">
+        <div class="container">
+            <h2>시뮬레이션 시나리오</h2>
+            <div class="scenarios-grid">
+                <div class="scenario-card">
+                    <div class="scenario-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <h3>택배 배송 사칭</h3>
+                    <p>택배 미수령을 빌미로 개인정보와 금전을 요구하는 수법</p>
+                    <span class="difficulty-badge easy">난이도: 초급</span>
+                </div>
+                <div class="scenario-card">
+                    <div class="scenario-icon">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <h3>금융감독원 사칭</h3>
+                    <p>금융 사고를 빌미로 안전계좌 이체를 유도하는 수법</p>
+                    <span class="difficulty-badge medium">난이도: 중급</span>
+                </div>
+                <div class="scenario-card">
+                    <div class="scenario-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>경찰청 사칭</h3>
+                    <p>범죄 연루를 빌미로 협박하며 금전을 요구하는 수법</p>
+                    <span class="difficulty-badge hard">난이도: 고급</span>
+                </div>
+                <div class="scenario-card">
+                    <div class="scenario-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>가족 사칭</h3>
+                    <p>긴급 상황을 가장해 즉시 송금을 요구하는 수법</p>
+                    <span class="difficulty-badge medium">난이도: 중급</span>
+                </div>
+                <div class="scenario-card">
+                    <div class="scenario-icon">
+                        <i class="fas fa-landmark"></i>
+                    </div>
+                    <h3>은행원 사칭</h3>
+                    <p>대출 승인이나 보안 문제로 정보를 요구하는 수법</p>
+                    <span class="difficulty-badge easy">난이도: 초급</span>
                 </div>
             </div>
         </div>
@@ -180,10 +215,10 @@
     <section class="cta-section">
         <div class="container">
             <div class="cta-content">
-                <h2>귀사의 성장을 함께 시작하세요</h2>
-                <p>지금 바로 전문가 상담을 신청하고 맞춤형 솔루션을 받아보세요</p>
+                <h2>지금 바로 시뮬레이션을 시작하세요</h2>
+                <p>실전 연습을 통해 보이스피싱으로부터 자신을 보호하는 능력을 키워보세요</p>
                 <button class="btn btn-primary" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
-                    지금 상담하기
+                    시뮬레이션 시작하기
                 </button>
             </div>
         </div>
@@ -195,24 +230,23 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3 class="footer-logo">SumTech</h3>
-                    <p>금융 자문 비즈니스의 성장을 위한 혁신적인 솔루션을 제공합니다.</p>
+                    <p>보이스피싱 예방을 위한 AI 기반 솔루션을 제공합니다.</p>
                 </div>
                 <div class="footer-section">
                     <h4>서비스</h4>
                     <ul>
-                        <li><a href="service1.html">서비스 1</a></li>
-                        <li><a href="service2.html">서비스 2</a></li>
-                        <li><a href="service3.html">서비스 3</a></li>
-                        <li><a href="service4.html">서비스 4</a></li>
+                        <li><a href="service1.html">통화위험체크</a></li>
+                        <li><a href="service2.html">메세지 위협체크</a></li>
+                        <li><a href="service3.html">모의대화 코칭</a></li>
+                        <li><a href="service4.html">상황 퀴즈</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h4>회사</h4>
+                    <h4>긴급 신고</h4>
                     <ul>
-                        <li><a href="index.html#team">팀 소개</a></li>
-                        <li><a href="index.html#insights">인사이트</a></li>
-                        <li><a href="index.html#contact">문의하기</a></li>
-                        <li><a href="#">채용</a></li>
+                        <li>경찰신고: 112</li>
+                        <li>금융감독원: 1332</li>
+                        <li>보이스피싱: 1588-2112</li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -229,7 +263,6 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="chat-simulation.js"></script>
 </body>
 </html>
-

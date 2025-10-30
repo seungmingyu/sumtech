@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>서비스 4 - SumTech</title>
+    <title>상황 퀴즈 - SumTech</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -18,11 +18,11 @@
                 </a>
             </div>
             <ul class="nav-menu">
-                <li><a href="index.html" class="nav-link">Home</a></li>
-                <li><a href="service1.html" class="nav-link">1</a></li>
-                <li><a href="service2.html" class="nav-link">2</a></li>
-                <li><a href="service3.html" class="nav-link">3</a></li>
-                <li><a href="service4.html" class="nav-link active">4</a></li>
+                <li><a href="index.html" class="nav-link">홈</a></li>
+                <li><a href="service1.html" class="nav-link">통화위험체크</a></li>
+                <li><a href="service2.html" class="nav-link">메세지 위협체크</a></li>
+                <li><a href="service3.html" class="nav-link">모의대화 코칭</a></li>
+                <li><a href="service4.html" class="nav-link active">상황 퀴즈</a></li>
             </ul>
         </div>
     </nav>
@@ -30,147 +30,223 @@
     <!-- Service Detail Hero -->
     <section class="service-detail-hero">
         <div class="container">
-            <div class="breadcrumb">
-                <a href="index.html">Home</a> / <span>서비스 4</span>
-            </div>
-            <h1>서비스 4</h1>
-            <p class="hero-subtitle">금융 자문 비즈니스 성장을 위한 네 번째 핵심 솔루션</p>
+            <h1>상황 퀴즈</h1>
+            <p class="hero-subtitle">다양한 보이스피싱 상황을 문제로 풀며 대응력을 점검합니다</p>
         </div>
     </section>
 
-    <!-- Service Content -->
-    <section class="service-content">
+    <!-- Quiz Section -->
+    <section class="quiz-section">
         <div class="container">
-            <div class="content-grid">
-                <div class="content-main">
-                    <div class="content-section">
-                        <h2>서비스 개요</h2>
-                        <p>저희의 네 번째 서비스는 디지털 전환을 통한 경쟁력 강화입니다. 최신 기술과 플랫폼을 도입하여 디지털 시대에 맞는 비즈니스 모델로 혁신합니다.</p>
+            <!-- Quiz Start Screen -->
+            <div class="quiz-start-screen" id="quizStartScreen">
+                <div class="quiz-intro">
+                    <div class="quiz-icon">
+                        <i class="fas fa-question-circle"></i>
                     </div>
-
-                    <div class="content-section">
-                        <h2>주요 특징</h2>
-                        <div class="features-list">
-                            <div class="feature-item">
-                                <div class="feature-number">01</div>
-                                <div class="feature-content">
-                                    <h3>디지털 플랫폼</h3>
-                                    <p>온라인 고객 접점을 구축하고 디지털 서비스를 제공합니다.</p>
-                                </div>
-                            </div>
-                            <div class="feature-item">
-                                <div class="feature-number">02</div>
-                                <div class="feature-content">
-                                    <h3>데이터 활용</h3>
-                                    <p>빅데이터와 AI를 활용한 인사이트 도출 및 의사결정을 지원합니다.</p>
-                                </div>
-                            </div>
-                            <div class="feature-item">
-                                <div class="feature-number">03</div>
-                                <div class="feature-content">
-                                    <h3>고객 경험</h3>
-                                    <p>디지털 채널을 통한 차별화된 고객 경험을 제공합니다.</p>
-                                </div>
-                            </div>
-                            <div class="feature-item">
-                                <div class="feature-number">04</div>
-                                <div class="feature-content">
-                                    <h3>보안 강화</h3>
-                                    <p>금융 데이터 보안과 개인정보 보호를 최우선으로 합니다.</p>
-                                </div>
-                            </div>
+                    <h2>보이스피싱 대응 능력 테스트</h2>
+                    <p>실제 보이스피싱 상황에서 어떻게 대응해야 하는지 알아보세요</p>
+                    
+                    <div class="quiz-info-grid">
+                        <div class="quiz-info-card">
+                            <i class="fas fa-list-ol"></i>
+                            <h3>총 10문제</h3>
+                            <p>랜덤 추출 문제</p>
+                        </div>
+                        <div class="quiz-info-card">
+                            <i class="fas fa-clock"></i>
+                            <h3>제한 시간 없음</h3>
+                            <p>천천히 생각하며 풀기</p>
+                        </div>
+                        <div class="quiz-info-card">
+                            <i class="fas fa-trophy"></i>
+                            <h3>점수 및 해설</h3>
+                            <p>상세한 피드백 제공</p>
                         </div>
                     </div>
 
-                    <div class="content-section">
-                        <h2>제공 프로세스</h2>
-                        <div class="process-steps">
-                            <div class="process-step">
-                                <div class="step-circle">1</div>
-                                <h4>디지털 진단</h4>
-                                <p>현재 디지털 역량 평가</p>
-                            </div>
-                            <div class="process-arrow">→</div>
-                            <div class="process-step">
-                                <div class="step-circle">2</div>
-                                <h4>전환 전략</h4>
-                                <p>디지털 전환 로드맵 수립</p>
-                            </div>
-                            <div class="process-arrow">→</div>
-                            <div class="process-step">
-                                <div class="step-circle">3</div>
-                                <h4>플랫폼 구축</h4>
-                                <p>디지털 시스템 도입</p>
-                            </div>
-                            <div class="process-arrow">→</div>
-                            <div class="process-step">
-                                <div class="step-circle">4</div>
-                                <h4>고도화</h4>
-                                <p>지속적인 개선 및 혁신</p>
-                            </div>
-                        </div>
+                    <!-- Topic Selection -->
+                    <div class="topic-select-container">
+                        <label class="topic-label">퀴즈 주제 선택</label>
+                        <select id="topicSelect" class="topic-select">
+                            <option value="all">🎲 전체 주제 (랜덤 10문제)</option>
+                            <option value="delivery">🚚 택배 스미싱 (10문제)</option>
+                            <option value="finance">💰 금융/대출 사칭 (10문제)</option>
+                            <option value="family">👩‍👧 가족/지인 사칭 (10문제)</option>
+                            <option value="public">🏛️ 공공기관 사칭 (10문제)</option>
+                            <option value="voice">📞 음성/통화 보이스피싱 (10문제)</option>
+                        </select>
                     </div>
 
-                    <div class="content-section">
-                        <h2>기대 효과</h2>
-                        <div class="benefits-grid">
-                            <div class="benefit-card">
-                                <i class="fas fa-mobile-alt"></i>
-                                <h4>모바일 접근성</h4>
-                                <p>언제 어디서나 서비스 이용</p>
-                            </div>
-                            <div class="benefit-card">
-                                <i class="fas fa-sync"></i>
-                                <h4>실시간 처리</h4>
-                                <p>즉각적인 업무 처리 가능</p>
-                            </div>
-                            <div class="benefit-card">
-                                <i class="fas fa-brain"></i>
-                                <h4>AI 분석</h4>
-                                <p>인공지능 기반 의사결정 지원</p>
-                            </div>
-                            <div class="benefit-card">
-                                <i class="fas fa-shield-alt"></i>
-                                <h4>보안 강화</h4>
-                                <p>최고 수준의 보안 체계</p>
-                            </div>
-                        </div>
+                    <button class="btn btn-accent btn-large" id="startQuizBtn">
+                        <i class="fas fa-play"></i>
+                        퀴즈 시작하기
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Progress Screen -->
+            <div class="quiz-progress-screen" id="quizProgressScreen" style="display: none;">
+                <!-- Progress Bar -->
+                <div class="quiz-progress-bar">
+                    <div class="progress-info">
+                        <span>문제 <span id="currentQuestionNum">1</span> / <span id="totalQuestions">10</span></span>
+                        <span>점수: <span id="currentScore">0</span>점</span>
+                    </div>
+                    <div class="progress-bar-track">
+                        <div class="progress-bar-fill" id="progressBarFill"></div>
                     </div>
                 </div>
 
-                <div class="content-sidebar">
-                    <div class="sidebar-card">
-                        <h3>상담 신청</h3>
-                        <p>전문가와 상담하고 맞춤형 제안을 받아보세요.</p>
-                        <form class="inquiry-form">
-                            <input type="text" placeholder="이름" required>
-                            <input type="email" placeholder="이메일" required>
-                            <input type="tel" placeholder="연락처" required>
-                            <textarea rows="4" placeholder="문의 내용" required></textarea>
-                            <button type="submit" class="btn btn-primary btn-full">상담 신청하기</button>
-                        </form>
+                <!-- Question Card -->
+                <div class="quiz-question-card">
+                    <div class="question-category" id="questionCategory">
+                        <i class="fas fa-tag"></i>
+                        <span>택배 사칭</span>
+                    </div>
+                    <h3 class="question-text" id="questionText">
+                        다음 상황에서 가장 적절한 대응 방법은?
+                    </h3>
+                    <div class="question-scenario" id="questionScenario">
+                        "택배가 주소 불명으로 보관 중입니다. 링크를 클릭하여 확인하세요."
+                        라는 문자를 받았습니다.
                     </div>
 
-                    <div class="sidebar-card">
-                        <h3>다른 서비스</h3>
-                        <ul class="related-services">
-                            <li><a href="service1.html">→ 서비스 1</a></li>
-                            <li><a href="service2.html">→ 서비스 2</a></li>
-                            <li><a href="service3.html">→ 서비스 3</a></li>
-                        </ul>
+                    <div class="quiz-options" id="quizOptions">
+                        <!-- Options will be populated by JavaScript -->
                     </div>
 
-                    <div class="sidebar-card contact-info">
-                        <h3>문의하기</h3>
-                        <div class="contact-detail">
-                            <i class="fas fa-phone"></i>
-                            <span>02-1234-5678</span>
+                    <div class="quiz-buttons">
+                        <button class="btn btn-outline" id="prevQuestionBtn" style="display: none;">
+                            <i class="fas fa-arrow-left"></i>
+                            이전 문제
+                        </button>
+                        <button class="btn btn-primary" id="nextQuestionBtn" disabled>
+                            다음 문제
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <button class="btn btn-accent" id="submitQuizBtn" style="display: none;">
+                            <i class="fas fa-check"></i>
+                            제출하기
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Answer Feedback -->
+                <div class="answer-feedback" id="answerFeedback" style="display: none;">
+                    <div class="feedback-content">
+                        <div class="feedback-icon" id="feedbackIcon">
+                            <i class="fas fa-check-circle"></i>
                         </div>
-                        <div class="contact-detail">
-                            <i class="fas fa-envelope"></i>
-                            <span>contact@sumtech.co.kr</span>
+                        <h4 id="feedbackTitle">정답입니다!</h4>
+                        <p id="feedbackExplanation">올바른 대응 방법입니다.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Result Screen -->
+            <div class="quiz-result-screen" id="quizResultScreen" style="display: none;">
+                <div class="result-container">
+                    <div class="result-header">
+                        <div class="result-icon" id="resultIcon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <h2>퀴즈 완료!</h2>
+                        <p>수고하셨습니다. 결과를 확인하세요.</p>
+                    </div>
+
+                    <div class="result-score-card">
+                        <div class="score-circle">
+                            <svg width="200" height="200">
+                                <circle cx="100" cy="100" r="90" fill="none" stroke="#e5e7eb" stroke-width="12"/>
+                                <circle id="scoreCircle" cx="100" cy="100" r="90" fill="none" stroke="#0095ff" stroke-width="12" 
+                                        stroke-dasharray="565.48" stroke-dashoffset="565.48" 
+                                        transform="rotate(-90 100 100)" style="transition: stroke-dashoffset 1s ease;"/>
+                            </svg>
+                            <div class="score-text">
+                                <span class="score-number" id="finalScore">0</span>
+                                <span class="score-total">/ 100</span>
+                            </div>
+                        </div>
+                        <div class="score-details">
+                            <div class="score-detail-item">
+                                <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                                <span>정답: <strong id="correctCount">0</strong>개</span>
+                            </div>
+                            <div class="score-detail-item">
+                                <i class="fas fa-times-circle" style="color: #ef4444;"></i>
+                                <span>오답: <strong id="wrongCount">0</strong>개</span>
+                            </div>
                         </div>
                     </div>
+
+                    <div class="result-grade" id="resultGrade">
+                        <h3>당신의 등급</h3>
+                        <div class="grade-badge-large" id="gradeBadge">A+</div>
+                        <p id="gradeComment">보이스피싱 대응 능력이 매우 우수합니다!</p>
+                    </div>
+
+                    <div class="result-actions">
+                        <button class="btn btn-accent" id="retryQuizBtn">
+                            <i class="fas fa-redo"></i>
+                            다시 풀기
+                        </button>
+                        <button class="btn btn-outline" id="reviewAnswersBtn">
+                            <i class="fas fa-list"></i>
+                            오답 확인하기
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review Screen -->
+            <div class="quiz-review-screen" id="quizReviewScreen" style="display: none;">
+                <div class="review-header">
+                    <h2><i class="fas fa-clipboard-list"></i> 오답 복습</h2>
+                    <button class="btn btn-outline-small" id="backToResultBtn">
+                        <i class="fas fa-arrow-left"></i>
+                        결과로 돌아가기
+                    </button>
+                </div>
+                <div class="review-list" id="reviewList">
+                    <!-- Review items will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quiz Tips Section -->
+    <section class="quiz-tips-section">
+        <div class="container">
+            <h2>퀴즈 TIP</h2>
+            <div class="tips-grid">
+                <div class="tip-box">
+                    <div class="tip-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3>차분하게 생각하기</h3>
+                    <p>보이스피싱범은 급하게 행동하도록 유도합니다. 침착하게 대응하세요.</p>
+                </div>
+                <div class="tip-box">
+                    <div class="tip-icon">
+                        <i class="fas fa-phone-slash"></i>
+                    </div>
+                    <h3>전화 끊고 확인하기</h3>
+                    <p>의심되면 전화를 끊고 공식 연락처로 직접 확인하세요.</p>
+                </div>
+                <div class="tip-box">
+                    <div class="tip-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3>개인정보 보호하기</h3>
+                    <p>어떤 경우에도 개인정보나 금융정보를 제공하지 마세요.</p>
+                </div>
+                <div class="tip-box">
+                    <div class="tip-icon">
+                        <i class="fas fa-flag"></i>
+                    </div>
+                    <h3>신고하기</h3>
+                    <p>보이스피싱 의심 시 즉시 112, 1332로 신고하세요.</p>
                 </div>
             </div>
         </div>
@@ -180,10 +256,10 @@
     <section class="cta-section">
         <div class="container">
             <div class="cta-content">
-                <h2>귀사의 성장을 함께 시작하세요</h2>
-                <p>지금 바로 전문가 상담을 신청하고 맞춤형 솔루션을 받아보세요</p>
+                <h2>보이스피싱 대응 능력을 키우세요</h2>
+                <p>정기적으로 퀴즈를 풀어보며 실전 대응 능력을 향상시키세요</p>
                 <button class="btn btn-primary" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
-                    지금 상담하기
+                    퀴즈 다시 풀기
                 </button>
             </div>
         </div>
@@ -195,24 +271,23 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3 class="footer-logo">SumTech</h3>
-                    <p>금융 자문 비즈니스의 성장을 위한 혁신적인 솔루션을 제공합니다.</p>
+                    <p>보이스피싱 예방을 위한 AI 기반 솔루션을 제공합니다.</p>
                 </div>
                 <div class="footer-section">
                     <h4>서비스</h4>
                     <ul>
-                        <li><a href="service1.html">서비스 1</a></li>
-                        <li><a href="service2.html">서비스 2</a></li>
-                        <li><a href="service3.html">서비스 3</a></li>
-                        <li><a href="service4.html">서비스 4</a></li>
+                        <li><a href="service1.html">통화위험체크</a></li>
+                        <li><a href="service2.html">메세지 위협체크</a></li>
+                        <li><a href="service3.html">모의대화 코칭</a></li>
+                        <li><a href="service4.html">상황 퀴즈</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h4>회사</h4>
+                    <h4>긴급 신고</h4>
                     <ul>
-                        <li><a href="index.html#team">팀 소개</a></li>
-                        <li><a href="index.html#insights">인사이트</a></li>
-                        <li><a href="index.html#contact">문의하기</a></li>
-                        <li><a href="#">채용</a></li>
+                        <li>경찰신고: 112</li>
+                        <li>금융감독원: 1332</li>
+                        <li>보이스피싱: 1588-2112</li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -229,7 +304,6 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="quiz.js"></script>
 </body>
 </html>
-
