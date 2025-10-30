@@ -22,7 +22,6 @@ instance/
 # FastAPI / Logs
 *.log
 uploads/
-static/
 
 # VSCode
 .vscode/
