@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
-from app.routers import scan, exam
+from app.routers import scan, exam, api_quiz
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -26,3 +26,4 @@ def index_page( request: Request):
 
 app.include_router(scan.router)
 app.include_router(exam.router)
+app.include_router(api_quiz.router)

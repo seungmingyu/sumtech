@@ -67,3 +67,10 @@ def analyze_json(payload: Dict[str, Any]):
     path = analyze_session_report(sid, scenario)
     md = path.read_text(encoding="utf-8")
     return JSONResponse({"sid": sid, "path": str(path), "markdown": md})
+
+
+
+
+@router.get("/quiz", response_class=HTMLResponse)
+def voice_page(request: Request):
+    return templates.TemplateResponse("quiz.html", {"request": request})
