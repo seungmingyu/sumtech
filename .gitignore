@@ -1,1 +1,36 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Environment files
 .env
+.env.local
+.env.*
+
+# Databases
+*.sqlite3
+*.db
+instance/
+
+# FastAPI / Logs
+*.log
+uploads/
+static/
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# OS system files
+.DS_Store
+Thumbs.db
+
+# Alembic cache
+migrations/versions/*.pyc
