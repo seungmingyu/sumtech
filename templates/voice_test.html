@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>보이스피싱 통화 분석</title>
+</head>
+<body>
+  <h2>🎙️ 보이스피싱 통화 분석</h2>
+
+  <form id="voiceForm">
+    <div>
+      <label>오디오 파일:
+        <input type="file" name="file" id="file" accept="audio/*" required />
+      </label>
+    </div>
+ 
+    <div style="margin-top:12px;">
+      <button type="submit">분석하기</button>
+    </div>
+  </form>
+
+  <hr />
+
+  <h3>결과</h3>
+  <pre id="result">대기중…</pre>
+
+  <script>
+    const form = document.getElementById('voiceForm');
+    const resultEl = document.getElementById('result');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      resultEl.textContent = '⏳ 업로드 및 분석 중…';
+
+      const fd = new FormData(form);
+
+      try {
+        const res = await fetch('/scan/voice', {
+          method: 'POST',
+          body: fd
+        });
+        if (!res.ok) {
+          let msg = '서버 오류: ' + res.status;
+          try { const j = await res.json(); if (j && j.detail) msg = j.detail; } catch {}
+          throw new Error(msg);
+        }
+        const data = await res.json();
+        resultEl.textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        resultEl.textContent = '❌ 오류: ' + (err?.message || String(err));
+      }
+    });
+  </script>
+</body>
+</html>

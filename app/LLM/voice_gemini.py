@@ -85,3 +85,4 @@ def generate_rag_answer_from_audio(audio_bytes: bytes, mime_type: str | None = N
         }, ensure_ascii=False)
 
     return transcript, rag_json
+
