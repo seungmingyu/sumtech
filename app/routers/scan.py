@@ -1,12 +1,11 @@
 import json
-from fastapi import APIRouter, UploadFile, File, HTTPException, Form
+from fastapi import APIRouter, UploadFile, File, HTTPException, Form, Request
 from fastapi.templating import Jinja2Templates
-from fastapi.requests import Request
-from fastapi.responses import HTMLResponse, JSONResponse
-from app.LLM.voice_gemini import generate_rag_answer_from_audio
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from starlette.concurrency import run_in_threadpool
-from app.services.url_checker import JudgeUrls
+from app.LLM.voice_gemini import generate_rag_answer_from_audio
 from app.LLM.message_gemini import analyze_smishing_message
+from app.services.url_checker import JudgeUrls
 
 router = APIRouter(prefix="/scan")
 templates = Jinja2Templates(directory="templates")
@@ -23,109 +22,75 @@ def message_page(request: Request):
 async def scan_voice(file: UploadFile = File(...), k: int = 5):
     if not file.content_type or not file.content_type.startswith("audio/"):
         raise HTTPException(status_code=400, detail=f"오디오 파일만 업로드하세요. content_type={file.content_type}")
-
     audio_bytes = await file.read()
     if not audio_bytes:
         raise HTTPException(status_code=400, detail="비어있는 파일입니다.")
-
-    transcript, rag_json = await run_in_threadpool(
-        generate_rag_answer_from_audio,
-        audio_bytes,
-        file.content_type,
-        k,
-    )
-
+    transcript, rag_json = await run_in_threadpool(generate_rag_answer_from_audio, audio_bytes, file.content_type, k)
     try:
         data = json.loads(rag_json)
     except Exception:
         data = {
             "is_phishing": None,
-            "evidence": "LLM 응답 파싱 실패",
-            "solution": "기관 공식 대표번호로 재확인하고, 의심 시 112 또는 1332(금감원)로 문의하세요.",
-            "reference_chunk_id": [],
+            "probability": 0,
+            "top_k_reasons": [],
+            "evidence_spans": [],
+            "recommended_actions": [],
+            "explanation": "LLM 응답 파싱 실패",
+            "notes": "원문을 확인하십시오."
         }
 
-    if not isinstance(data, dict):
-        data = {"raw": rag_json}
-
-    if "evidence" not in data:
-        reasons = data.get("top_k_reasons") or []
-        evidence_texts = []
+    if isinstance(data, dict):
+        reasons = data.get("top_k_reasons", [])
+        cleaned_reasons = []
         for r in reasons:
-            if not isinstance(r, dict):
-                continue
-            rank = r.get("rank")
-            reason = r.get("reason")
+            reason_text = r.get("reason") or ""
             evs = r.get("evidence") or []
-            ev_join = ", ".join(str(x) for x in evs)
-            line = f"• {reason}" if reason else ""
-            if ev_join:
-                line += f"\n  - 근거: {ev_join}"
-            if line:
-                evidence_texts.append(line)
+            human_evs = [e for e in evs if not (isinstance(e, str) and e.startswith("index_"))]
+            if not human_evs:
+                human_evs = []
+            cleaned_reasons.append({"reason": reason_text, "evidence": human_evs})
+        data["top_k_reasons"] = cleaned_reasons
+
+        action_list = data.get("recommended_actions", [])
+        cleaned_actions = []
+        for a in action_list:
+            pr = a.get("priority") or ""
+            act = a.get("action") or ""
+            rsn = a.get("reason") or ""
+            cleaned_actions.append({"priority": pr, "action": act, "reason": rsn})
+        data["recommended_actions"] = cleaned_actions
+
+        evidence_texts = []
+        for idx, r in enumerate(data.get("top_k_reasons", []), start=1):
+            title = r.get("reason") or f"근거 {idx}"
+            evid = r.get("evidence") or []
+            if evid:
+                evid_lines = "\n  - ".join(evid)
+                evidence_texts.append(f"{idx}. {title}\n  - {evid_lines}")
+            else:
+                evidence_texts.append(f"{idx}. {title}\n  - 근거 없음")
         data["evidence"] = "\n\n".join(evidence_texts) if evidence_texts else "근거 없음"
 
-    if "solution" not in data:
-        actions = data.get("recommended_actions") or []
         action_texts = []
-        for a in actions:
-            if not isinstance(a, dict):
-                continue
-            pr = a.get("priority")
-            act = a.get("action")
-            rsn = a.get("reason")
-            line = f"[{pr}] {act}" if pr and act else (act or "")
+        for a in data.get("recommended_actions", []):
+            pr = f"[{a.get('priority')}]" if a.get("priority") else ""
+            act = a.get("action") or ""
+            rsn = a.get("reason") or ""
             if rsn:
-                line += f"\n- 이유: {rsn}"
-            if line:
-                action_texts.append(line)
-        data["solution"] = "\n\n".join(action_texts) if action_texts else "대응 가이드 없음"
-
-    if isinstance(data, dict):
-        tkr = data.get("top_k_reasons")
-        if isinstance(tkr, list) and tkr:
-            formatted_evidence = []
-            for r in tkr:
-                if not isinstance(r, dict):
-                    continue
-                ev_list = ", ".join(str(x) for x in (r.get("evidence") or []))
-                reason = r.get("reason") or ""
-                if reason:
-                    block = f"• {reason}"
-                    if ev_list:
-                        block += f"\n  - 근거: {ev_list}"
-                    formatted_evidence.append(block)
-            if formatted_evidence:
-                data["formatted_evidence"] = "\n\n".join(formatted_evidence)
-
-        ra = data.get("recommended_actions")
-        if isinstance(ra, list) and ra:
-            formatted_actions = []
-            for a in ra:
-                if not isinstance(a, dict):
-                    continue
-                pr = a.get("priority") or ""
-                act = a.get("action") or ""
-                rsn = a.get("reason") or ""
-                if act:
-                    block = f"[{pr}] {act}" if pr else act
-                    if rsn:
-                        block += f"\n- 이유: {rsn}"
-                    formatted_actions.append(block)
-            if formatted_actions:
-                data["formatted_actions"] = "\n\n".join(formatted_actions)
+                action_texts.append(f"{pr} {act}\n  - 이유: {rsn}")
+            else:
+                action_texts.append(f"{pr} {act}")
+        data["solution"] = "\n\n".join(a for a in action_texts if a) or "대응 가이드 없음"
 
     data["_transcript"] = transcript
     data["_filename"] = file.filename
     print(json.dumps(data, ensure_ascii=False, indent=2))
     return JSONResponse(content=data, media_type="application/json")
 
-
 @router.post("/message")
 def scan_message(text: str = Form(...)):
-    if not text.strip():
+    if not text or not text.strip():
         raise HTTPException(status_code=400, detail="text is empty")
-
     dic = JudgeUrls(text)
     if any(dic.values()):
         url_check_result = "True"
@@ -133,9 +98,7 @@ def scan_message(text: str = Form(...)):
         url_check_result = "N/A"
     else:
         url_check_result = "False"
-
     gemini_output = analyze_smishing_message(text, url_check_result)
-
     result = {
         "url_analysis": dic,
         "url_overall": url_check_result,
